@@ -14,4 +14,11 @@ public class HelloServlet extends HttpServlet {
         response.getWriter().print("Hello, World!");
     }
 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String name = request.getParameter("name");
+        if (name == null) name = "World";
+        request.setAttribute("user", name);
+        request.getRequestDispatcher("response.jsp").forward(request, response);
+    }
 }
