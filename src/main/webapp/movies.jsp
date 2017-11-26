@@ -31,5 +31,10 @@
                 </tr></td>
             </c:forEach>
         </table>
+
+        <br><br>
+        <form action="addMovie.jsp">
+            <input type="submit" value="Add new Movie" />
+        </form>
     </body>
 </html>
