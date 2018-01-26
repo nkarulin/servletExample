@@ -3,21 +3,33 @@
 
 <html>
     <style>
-    table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-    }
+        a, u {
+            text-decoration: none;
+        }
+        a:link {
+            color: white;
+        }
 
-    td, th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-    }
+        a:visited {
+            color: white;
+        }
+        .movie {
+            background-position: center;
+            height: 250px;
+            width: 200px;
+            overflow: hidden;
+            background-size: cover
+        }
+    	table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+        td {
+            text-align: center;
+            padding: 4px;
+        }
 
-    tr:nth-child(even) {
-        background-color: #dddddd;
-    }
     </style>
     <head>
         <title>Movies</title>
@@ -25,11 +37,22 @@
     <body>
         <h2>Hello, <%= session.getAttribute("login") %></h2>
         <table>
-            <c:forEach items="${movies}" var="movie" varStatus="status1">
-                <tr><td>
-                <c:out value="${movie.title} (${movie.year})"/>
-                </tr></td>
+        <tr>
+            <c:forEach items="${movies}" var="movie" varStatus="count">
+                <td>
+                <div class="movie" style="background-image:url('pics/${movie.image}')">
+                    <p><span style="background-color: #000003; color:white">
+                        <a href="movies/id/${count.index}">
+                            <c:out value="${movie.title} (${movie.year})"/>
+                        </a>
+                    </span></p>
+                </div></td>
+
+                <c:if test = "${count.count % 3 == 0}">
+                    </tr><tr>
+                </c:if>
             </c:forEach>
+            </tr>
         </table>
 
         <br><br>

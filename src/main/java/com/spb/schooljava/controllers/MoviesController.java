@@ -3,21 +3,24 @@ package com.spb.schooljava.controllers;
 import com.spb.schooljava.dao.InMemoryMoviesDAO;
 import com.spb.schooljava.dao.MoviesDAO;
 import com.spb.schooljava.models.Movie;
+import sun.misc.IOUtils;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
+import javax.servlet.http.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Optional;
 
-@WebServlet(name = "MoviesController", urlPatterns = {"movies/*"}, loadOnStartup = 1)
+@WebServlet(name = "MoviesController", urlPatterns = {"/movies"}, loadOnStartup = 1)
+@MultipartConfig
 public class MoviesController extends HttpServlet {
 
     public static final String LOGIN_ATTR = "login";
 
-    static MoviesDAO moviesDAO = new InMemoryMoviesDAO();
+    static MoviesDAO moviesDAO = InMemoryMoviesDAO.INSTANCE;
 
     //list movies
     //GET/movies/
@@ -27,7 +30,7 @@ public class MoviesController extends HttpServlet {
         if (!checkLogin(request, response)) return;
 
         request.setAttribute("movies", moviesDAO.listAllMovies());
-        request.getRequestDispatcher("movies.jsp").forward(request, response);
+        request.getRequestDispatcher("/movies.jsp").forward(request, response);
     }
 
     //add a movie
@@ -41,16 +44,39 @@ public class MoviesController extends HttpServlet {
         String year = request.getParameter("year");
 
         if (title == null || year == null) {
-            doGet(request, response);
+            //add nothing
+            response.sendRedirect("movies");
         }
 
         Movie movie = new Movie(title, Integer.parseInt(year));
+
+        uploadImage(request).ifPresent(movie::setImage);
+
         moviesDAO.addMovie(movie);
 
-        doGet(request, response);
+        response.sendRedirect("movies");
     }
 
-    private boolean checkLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private Optional<String> uploadImage(HttpServletRequest request) throws IOException, ServletException {
+        Part filePart = request.getPart("image"); // Retrieves <input type="file" name="image">
+
+        if (filePart == null) {
+            return Optional.empty();
+        }
+
+        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
+        InputStream fileContent = filePart.getInputStream();
+
+        File file = new File(request.getServletContext().getRealPath("/") + "/pics/" + fileName);
+        System.err.println(file.getAbsolutePath());
+        Files.copy(fileContent, file.toPath());
+
+        return Optional.of(fileName);
+
+        // ... (do your job here)
+    }
+
+    static boolean checkLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         String login = request.getParameter(LOGIN_ATTR);
         if (login != null) {
@@ -58,7 +84,7 @@ public class MoviesController extends HttpServlet {
         }
 
         if (session.getAttribute(LOGIN_ATTR) == null) {
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
             return false;
         } else {
             return true;

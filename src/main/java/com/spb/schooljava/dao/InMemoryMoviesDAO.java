@@ -5,19 +5,21 @@ import com.spb.schooljava.models.Movie;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by kodoo on 26.11.17.
- */
+
 public class InMemoryMoviesDAO extends MoviesDAO {
+
+    public static final InMemoryMoviesDAO INSTANCE = new InMemoryMoviesDAO();
 
     private List<Movie> movies;
 
-    public InMemoryMoviesDAO() {
-        movies = new ArrayList<Movie>() {{
-            add(new Movie("Летят журавли", 1957));
-            add(new Movie("Девчата", 1961));
-            add(new Movie("Иван Васильевич меняет профессию", 1973));
-        }};
+    private InMemoryMoviesDAO() {
+        movies = new ArrayList<Movie>() {
+            {
+                add(new Movie("Летят журавли", 1957, "letyat_zhuravli.jpg"));
+                add(new Movie("Девчата", 1961, "devchyata.jpg"));
+                add(new Movie("Иван Васильевич меняет профессию", 1973, "ivan.jpg"));
+            }
+        };
     }
 
     @Override
