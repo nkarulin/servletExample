@@ -2,20 +2,32 @@ package com.spb.schooljava.models;
 
 public class Movie {
 
+    private int id;
+
     private String title;
     private int year;
     private String image;
 
-    public Movie(String title, int year, String image) {
+    public Movie(int id, String title, int year, String image) {
+        this.id = id;
         this.title = title;
         this.year = year;
         this.image = image;
     }
 
-    public Movie(String title, int year) {
+    public Movie(int id, String title, int year) {
+        this.id = id;
         this.title = title;
         this.year = year;
         this.image = "default.jpg";
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

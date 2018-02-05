@@ -1,5 +1,6 @@
 package com.spb.schooljava.controllers;
 
+import com.spb.schooljava.dao.H2DAO;
 import com.spb.schooljava.dao.InMemoryMoviesDAO;
 import com.spb.schooljava.dao.MoviesDAO;
 import com.spb.schooljava.models.Movie;
@@ -20,7 +21,7 @@ public class MoviePageController extends HttpServlet {
 
     private static Pattern ID_PATTERN = Pattern.compile(".*/movies/id/(.+)");
 
-    private MoviesDAO moviesDAO = InMemoryMoviesDAO.INSTANCE;
+    private MoviesDAO moviesDAO = H2DAO.INSTANCE;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

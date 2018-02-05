@@ -2,29 +2,29 @@ package com.spb.schooljava.dao;
 
 import com.spb.schooljava.models.Movie;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
 
 
 public class InMemoryMoviesDAO extends MoviesDAO {
 
     public static final InMemoryMoviesDAO INSTANCE = new InMemoryMoviesDAO();
 
-    private List<Movie> movies;
+    private static int idCount = 0;
+
+    private HashMap<Integer, Movie> movies;
 
     private InMemoryMoviesDAO() {
-        movies = new ArrayList<Movie>() {
-            {
-                add(new Movie("Летят журавли", 1957, "letyat_zhuravli.jpg"));
-                add(new Movie("Девчата", 1961, "devchyata.jpg"));
-                add(new Movie("Иван Васильевич меняет профессию", 1973, "ivan.jpg"));
-            }
-        };
+        movies = new HashMap<>();
+
+        movies.put(idCount++, new Movie(idCount, "Летят журавли", 1957, "letyat_zhuravli.jpg"));
+        movies.put(idCount++, new Movie(idCount, "Девчата", 1961, "devchyata.jpg"));
+        movies.put(idCount++, new Movie(idCount, "Иван Васильевич меняет профессию", 1973, "ivan.jpg"));
     }
 
     @Override
-    public List<Movie> listAllMovies() {
-        return movies;
+    public Collection<Movie> listAllMovies() {
+        return movies.values();
     }
 
     @Override
@@ -34,6 +34,11 @@ public class InMemoryMoviesDAO extends MoviesDAO {
 
     @Override
     public void addMovie(Movie movie) {
-        movies.add(movie);
+        movies.put(movie.getId(), movie);
+    }
+
+    @Override
+    public int newId() {
+        return idCount++;
     }
 }

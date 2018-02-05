@@ -42,7 +42,7 @@
                 <td>
                 <div class="movie" style="background-image:url('pics/${movie.image}')">
                     <p><span style="background-color: #000003; color:white">
-                        <a href="movies/id/${count.index}">
+                        <a href="movies/id/${movie.id}">
                             <c:out value="${movie.title} (${movie.year})"/>
                         </a>
                     </span></p>

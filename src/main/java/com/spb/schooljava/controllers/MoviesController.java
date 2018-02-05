@@ -1,15 +1,16 @@
 package com.spb.schooljava.controllers;
 
-import com.spb.schooljava.dao.InMemoryMoviesDAO;
+import com.spb.schooljava.dao.H2DAO;
 import com.spb.schooljava.dao.MoviesDAO;
 import com.spb.schooljava.models.Movie;
-import sun.misc.IOUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -20,7 +21,7 @@ public class MoviesController extends HttpServlet {
 
     public static final String LOGIN_ATTR = "login";
 
-    static MoviesDAO moviesDAO = InMemoryMoviesDAO.INSTANCE;
+    static MoviesDAO moviesDAO = H2DAO.INSTANCE;
 
     //list movies
     //GET/movies/
@@ -48,7 +49,7 @@ public class MoviesController extends HttpServlet {
             response.sendRedirect("movies");
         }
 
-        Movie movie = new Movie(title, Integer.parseInt(year));
+        Movie movie = new Movie(moviesDAO.newId(), title, Integer.parseInt(year));
 
         uploadImage(request).ifPresent(movie::setImage);
 
